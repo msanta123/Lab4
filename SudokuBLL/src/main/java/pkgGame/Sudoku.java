@@ -1,6 +1,11 @@
 package pkgGame;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Random;
 
 import pkgHelper.LatinSquare;
@@ -48,6 +53,63 @@ public class Sudoku extends LatinSquare {
 	 * @throws Exception
 	 *             if the iSize given doesn't have a whole number square root
 	 */
+	private HashMap<Integer, Cell> allCells;
+	/** 
+	 * Creates a HashMap, mapping each cell to an integer value for ease of access
+	 * @author Matthew
+	 *
+	 */
+	
+	private class Cell{
+		private int iRow;
+		private int iCol;
+		private ArrayList<Integer> lstValidValues =  new ArrayList<Integer>();
+		
+		
+		Cell(int x, int y){
+			iRow = x;
+			iCol = y;
+		}
+		public int getiRow() {
+			return iRow;
+		}
+		public int getiCol() {
+			return iCol;
+		}
+		@Override
+		public int hashCode() {
+			return Objects.hash(iRow, iCol);
+		}
+		@Override
+		public boolean equals(Object object) {
+			if(object == this) {
+				return true;
+			}
+			if(!(object instanceof Cell)) {
+				return false;
+			}
+			Cell cell = (Cell) object;
+			return this.getiCol() == cell.getiCol() && this.getiRow() == cell.getiRow();
+		}
+		public ArrayList<Integer> getlstValidValues(){
+			return lstValidValues;
+		}
+		public void setlstValidValues(HashSet<Integer> listvalues) {
+			for(Integer value : listvalues ) {
+				lstValidValues.add(value);
+			}
+		}
+		public void shuffleValidValues() {
+			Collections.shuffle(lstValidValues);
+		}
+		public Cell getNextCell(Cell acell) {
+			int regionNbr = getRegionNbr(acell.getiCol(), acell.getiRow());
+			if(regionNbr < iSize) {
+				return new Cell(regionNbr % iSize, regionNbr / iSize);
+			}
+			return null;
+		}
+	}
 	public Sudoku(int iSize) throws Exception {
 
 		this.iSize = iSize;
@@ -409,5 +471,27 @@ public class Sudoku extends LatinSquare {
 			ar[index] = ar[i];
 			ar[i] = a;
 		}
+	}
+	public HashSet<Integer> getAllValidCellValues(int iCol, int iRow) {
+		HashSet<Integer> myHashSet = new HashSet<Integer>();
+		for(int i=0; i<iSize; i++) {
+			if(isValidValue(iRow, iCol, i)) {
+				myHashSet.add(i);
+			}
+		}
+		return myHashSet;
+	}
+	public void setCells() {
+		for(int i=0; i < iSize; i++) {
+			for(int j=0; j<iSize;j++) {
+				Cell myCell = new Cell(i,j);
+				myCell.setlstValidValues(getAllValidCellValues(j,i));
+				myCell.shuffleValidValues();
+				allCells.put(myCell.hashCode(), myCell);
+			}
+		}
+	}
+	public void fillRemaining(Cell aCell) {
+		
 	}
 }
