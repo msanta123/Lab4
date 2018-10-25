@@ -124,4 +124,24 @@ public class SudokuPrivateMethodsTest {
 		}
 
 	}
+	@Test
+	public void fillRemaining_Test1() throws Exception {
+		try {
+			Sudoku s1 = new Sudoku(9);
+			s1.PrintPuzzle();
+			System.out.println(s1.isSudoku());
+		} catch (ClassNotFoundException e1)
+		{fail("ClassNotFoundException");
+		} catch (NoSuchMethodException e) 
+		{fail("NoSuchMethodException");
+		} catch (SecurityException e) 
+		{fail("SecurityException");
+		} catch (IllegalAccessException e) 
+		{fail("IllegalAccessException");
+		} catch (IllegalArgumentException e)
+		{fail("IllegalArgumentException");
+		} catch (InvocationTargetException e) 
+		{fail("InvocationTargetException, Invalid size");
+		}
+	}
 }
