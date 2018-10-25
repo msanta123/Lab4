@@ -491,7 +491,16 @@ public class Sudoku extends LatinSquare {
 			}
 		}
 	}
-	public void fillRemaining(Cell aCell) {
-		
+	private boolean fillRemaining(Sudoku.Cell myCell) {
+		if (myCell == null)													
+		for (int iValue : myCell.getLstValidValues()) {							
+			if (isValidValue(myCell, iValue)) {									
+				this.getPuzzle()[myCell.getiRow()][myCell.getiCol()] = iValue;					
+				if (fillRemaining(myCell.GetNextCell(myCell)))				
+					return true;
+				this.getPuzzle()[myCell.getiRow()][myCell.getiCol()] = 0;}
+		}
+		return false;
 	}
+}
 }
